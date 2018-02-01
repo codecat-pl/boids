@@ -1,0 +1,27 @@
+{
+  "name": "boids",
+  "version": "1.0.0",
+  "description": "",
+  "main": "boids.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "mocha -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raaymax/boids.git"
+  },
+  "author": "Mateusz Russak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raaymax/boids/issues"
+  },
+  "homepage": "https://github.com/raaymax/boids#readme",
+  "devDependencies": {
+    "nyc": "^11.4.1",
+    "sinon": "^4.2.2"
+  },
+  "dependencies": {
+    "webpack": "^3.10.0"
+  }
+}
