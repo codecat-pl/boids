@@ -1,7 +1,12 @@
 # boids
 Javascript implementation of boids in 3D
 
-Work in progress... currently not working.
+## TODO
+
+* Optimization
+* Configuration (currently hardcoded values)
+* UI for controlling configuration options
+* Refactoring
 
 ## Build
 ```sh
