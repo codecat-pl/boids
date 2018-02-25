@@ -58,12 +58,6 @@ describe('Vector3', ()=>{
         expect(result).to.be.eql(new Vector3(1,2,3));
     });
 
-    it('should calc average from vectors',()=>{
-        let result = Vector3.average([]);
-        expect(Vector3.isVector(result)).to.be.true;
-        expect(result).to.be.eql(new Vector3(NaN,NaN,NaN));
-    });
-
 
     it('should negate itself', ()=>{
         const negation = new Vector3(1, -2, 3).negate();
@@ -75,5 +69,35 @@ describe('Vector3', ()=>{
         expect(normal.length()).to.be.eql(1);
     })
 
+    it('should multiply with scalar', ()=>{
+        const result = new Vector3(1, -2, 3).multiply(2);
+        expect(result).to.be.eql(new Vector3(2,-4,6));
+    })
 
+
+    it('should know if isNaN - false', ()=>{
+        const result = new Vector3(1, -2, 3);
+        expect(result.isNaN()).to.equal(false);
+    })
+
+    it('should know if isNaN - true x', ()=>{
+        const result = new Vector3(NaN, -2, 3);
+        expect(result.isNaN()).to.equal(true);
+    })
+
+    it('should know if isNaN - true y', ()=>{
+        const result = new Vector3(1, NaN, 3);
+        expect(result.isNaN()).to.equal(true);
+    })
+
+    it('should know if isNaN - true z', ()=>{
+        const result = new Vector3(4, -2, NaN);
+        expect(result.isNaN()).to.equal(true);
+    })
+
+    it('should be NaN if calc average from nothing ',()=>{
+        let result = Vector3.average([]);
+        expect(Vector3.isVector(result)).to.be.true;
+        expect(result.isNaN()).to.equal(true);
+    });
 });

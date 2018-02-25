@@ -1,5 +1,9 @@
 const Vector3 = require('./vector');
 const Sphere = require('./sphere');
+
+const getPosition = boid=>boid.position;
+const getVelocity = boid=>boid.velocity;
+
 module.exports = class Boid {
     constructor( env, headingRadius, centerRadius, omitRadius ) {
         this.position = new Vector3();
@@ -11,29 +15,45 @@ module.exports = class Boid {
         this.environment.addBoid(this)
     }
 
+    getGroupAverage(from ,radius = Infinity ) {
+        const area = new Sphere(this.position, radius);
+        const list = this.environment.getBoidsInArea(area, this.id).map(from);
+        return Vector3.average(list);
+    }
+
     getGroupPosition( radius = Infinity ) {
-        let area = new Sphere(this.position, radius);
-        return this.environment.getBoidsAveragePositionInArea(area);
+        return this.getGroupAverage(getPosition, radius);
     }
 
     getAlignmentVector( radius = Infinity ) {
-        let area = new Sphere(this.position, radius);
-        return this.environment.getBoidsAverageVelocityInArea(area);
+        return this.getGroupAverage(getVelocity, radius);
     }
 
     getSeparationVector( radius = Infinity ) {
-        return this.getGroupPosition(radius).negate().normalize();
+        return this.getGroupPosition(radius).substract(this.position).negate().normalize();
     }
 
-    getCohesionVector() {
-        return this.getGroupPosition().substract(this.position);
+    getCohesionVector( radius = Infinity ) {
+        return this.getGroupPosition(radius).substract(this.position);
+    }
+
+    apply( velocity ){
+        this.appliedVelocity = velocity;
     }
 
     updateVelocity() {
-        this.velocity = new Vector3()
-            .add(this.getSeparationVector())
-            .add(this.getCohesionVector())
-            .add(this.getAlignmentVector())
+        const separation = this.getSeparationVector(5).multiply(4);
+        const cohesion = this.getCohesionVector(15).divide(50);
+        const alignment = this.getAlignmentVector(15).divide(4);
+        if(!separation.isNaN()) this.velocity = this.velocity.add(separation);
+        if(!cohesion.isNaN()) this.velocity = this.velocity.add(cohesion);
+        if(!alignment.isNaN()) this.velocity = this.velocity.add(alignment);
+        if(this.appliedVelocity) this.velocity = this.velocity.add(this.appliedVelocity);
+
+        if(this.velocity.length() > this.environment.MAX_SPEED)
+            this.velocity = this.velocity
+            .normalize()
+            .multiply(this.environment.MAX_SPEED);
     }
 
     updatePosition() {

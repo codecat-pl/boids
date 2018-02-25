@@ -17,28 +17,51 @@ describe('BoidsEnvironment', ()=>{
     });
 
     it('should store created boids',()=>{
-        let boid = factory.createBoid();
+        const boid = factory.createBoid();
         expect(env.getBoids()).to.contain(boid)
     });
 
     it('should return boids in area',()=>{
-        let boid = factory.createBoid();
+        const boid = factory.createBoid();
         expect(env.getBoidsInArea(area)).to.contain(boid)
     });
 
+    it('should return boids in area without one of with specified id',()=>{
+        factory.createBoid();
+        factory.createBoid();
+        const boid = factory.createBoid();
+        expect(env.getBoidsInArea(area, boid.id)).to.not.contain(boid)
+    });
+
     it('should not return boids if in area are no boids',()=>{
-        let boid = factory.createBoid();
-        let emptyArea = new Sphere(new Vector3(5,5,5), 1);
+        factory.createBoid();
+        const emptyArea = new Sphere(new Vector3(5,5,5), 1);
         expect(env.getBoidsInArea(emptyArea)).to.have.lengthOf(0)
     });
 
     it('should update all boids',()=>{
-        let fakeBoid = {update: sinon.spy()};
-        env.addBoid(fakeBoid);
+        const boid = factory.createBoid();
+        boid.update = sinon.spy();
         env.update();
-        expect(fakeBoid.update.calledOnce).to.be.true;
+        expect(boid.update.calledOnce).to.be.true;
     });
 
+
+    it('should apply velocity toward center if boid is too far',()=>{
+        const boid = factory.createBoid(new Vector3(1000,0,0));
+        boid.apply = sinon.spy();
+        env.redirect();
+        expect(boid.apply.withArgs(new Vector3(-10,0,0)).calledOnce).to.be.true;
+    });
+
+    it('should apply velocity before update on env update',()=>{
+        const boid = factory.createBoid(new Vector3(1000,0,0));
+        boid.apply = sinon.spy();
+        boid.update = sinon.spy();
+        env.update();
+        expect(boid.apply.calledBefore(boid.update)).to.equal(true);
+
+    });
 
     it('should know average position of boids in area',()=>{
         factory.createBoid();

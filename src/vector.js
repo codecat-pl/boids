@@ -14,6 +14,10 @@ module.exports = class Vector3{
         return new Vector3(this.x/scalar, this.y/scalar, this.z/scalar);
     }
 
+    multiply(scalar){
+        return new Vector3(this.x*scalar, this.y*scalar, this.z*scalar);
+    }
+
     substract(v){
         return new Vector3(this.x-v.x, this.y-v.y, this.z-v.z);
     }
@@ -30,6 +34,10 @@ module.exports = class Vector3{
     normalize(){
         const len = this.length();
         return new Vector3(this.x/len, this.y/len, this.z/len)
+    }
+
+    isNaN(){
+        return Number.isNaN(this.x) || Number.isNaN(this.y) || Number.isNaN(this.z);
     }
 
     static average(vectors){

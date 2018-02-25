@@ -53,40 +53,52 @@ describe('boids',()=>{
 
     it('should know average position of surrounding boids',()=>{
         factory.createBoid(new Vector3(2,2,2));
-        expect(boid.getGroupPosition()).to.be.eql(new Vector3(1,1,1))
+        expect(boid.getGroupPosition(Infinity)).to.be.eql(new Vector3(2,2,2));
+    });
+
+    it('should know average position of surrounding boids',()=>{
+        factory.createBoid(new Vector3(2,2,2));
+        factory.createBoid(new Vector3(4,4,4));
+        expect(boid.getGroupPosition(Infinity)).to.be.eql(new Vector3(3,3,3));
     });
 
     it('should know average position of surrounding boids to some distance',()=>{
         const radius = 5;
         factory.createBoid(new Vector3(2,2,2));
         factory.createBoid(new Vector3(10,10,10));
-        expect(boid.getGroupPosition(radius)).to.be.eql(new Vector3(1,1,1))
+        expect(boid.getGroupPosition(radius)).to.be.eql(new Vector3(2,2,2))
     });
 
     it('should know where surrounding boids are heading', ()=>{
         const radius = 5;
         factory.createBoid(new Vector3(), new Vector3(2,2,2));
-        expect(boid.getAlignmentVector(radius)).to.be.eql(new Vector3(1,1,1))
+        expect(boid.getAlignmentVector(radius)).to.be.eql(new Vector3(2,2,2))
     });
 
     it('should know how to avoid boids that are too close', ()=>{
         factory.createBoid(new Vector3(-1,0,0));
         factory.createBoid(new Vector3(0,-1,0));
         factory.createBoid(new Vector3(0,0,-1));
-        expect(boid.getSeparationVector()).to.be.eql(new Vector3(1,1,1).normalize())
+        const result = boid.getSeparationVector();
+        const expected = new Vector3(1,1,1).normalize()
+        comparePositions(expected, result);
     });
 
     it('should update velocity according to neighbors', ()=>{
-        factory.createBoid(new Vector3(1,0,0), new Vector3());
-        boid.updateVelocity();
-        expect(boid.velocity).to.be.eql(new Vector3(-0.5,0,0))
+        factory.createBoid(new Vector3(), new Vector3(1,0,0));
+        factory.createBoid(new Vector3(), new Vector3(0,1,0));
+        const result = boid.getAlignmentVector();
+        const expected = Vector3.average([new Vector3(1,0,0), new Vector3(0,1,0)]);
+        comparePositions(expected, result);
+        //expect(boid.velocity).to.be.eql(new Vector3(-0.5,-0.5,0))
     });
 
 
     it('should update velocity according to neighbors', ()=>{
         factory.createBoid(new Vector3(1,0,0), new Vector3(0,6,0));
-        boid.updateVelocity();
-        expect(boid.velocity).to.be.eql(new Vector3(-0.5,3,0))
+        const result = boid.getAlignmentVector();
+        const expected = new Vector3(0,6,0);
+        comparePositions(expected,result);
     });
 
     it('should update velocity and position',()=>{
@@ -98,6 +110,24 @@ describe('boids',()=>{
         expect(boid.updatePosition.calledOnce).to.be.true;
         expect(boid.updateVelocity.calledOnce).to.be.true;
     });
+
+    it('should not exceed maximum velocity',()=>{
+        factory.createBoid(new Vector3(1,0,0), new Vector3(0,16,0));
+        boid.updateVelocity();
+        expect(Math.abs(boid.velocity.length())).to.be.most(env.MAX_SPEED);
+    });
+
+    it('should add aplied velocity during velocity update',()=>{
+        boid.apply(new Vector3(100,0,0));
+        boid.updateVelocity();
+        expect(boid.velocity.x).to.be.closeTo(env.MAX_SPEED, 0.001);
+    });
+
+    function comparePositions(expected, actual){
+        expect(actual.x).to.be.closeTo(expected.x, 0.0000001);
+        expect(actual.y).to.be.closeTo(expected.y, 0.0000001);
+        expect(actual.z).to.be.closeTo(expected.z, 0.0000001);
+    }
 
     function checkIfPropertyIs3DVector(ob, property){
         expect(ob).to.have.property(property);
