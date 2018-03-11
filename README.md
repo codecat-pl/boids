@@ -1,10 +1,9 @@
 # boids
 Javascript implementation of boids in 3D
-
+Heres [demo](https://codecat-pl.github.io/boids/)
 ## TODO
 
 * Optimization
-* Configuration (currently hardcoded values)
 * UI for controlling configuration options
 * Refactoring
 
