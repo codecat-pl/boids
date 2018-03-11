@@ -1,10 +1,11 @@
 const Vector3 = require('./vector');
+const Config = require('./config');
 
 class BoidsEnvironment{
     constructor(){
         this.boids = [];
-        this.MAX_SPEED = 1;
-        this.MAX_DISTANCE = 100;
+        this.MAX_SPEED = Config.get('maxSpeed');
+        this.MAX_DISTANCE = Config.get('maxDistanceFromCenter');
     }
 
     getBoids(){

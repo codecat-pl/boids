@@ -1,19 +1,22 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     entry: {
-        boids: ['./index.js', './lib/babylon.custom.js']
+        boids: ['./index.js']
     },
     output: {
         filename: '[name].js',
-        path: __dirname + '/dist'
+        path: __dirname + '/dist',
+        publicPath: "/"
     },
-    externals: {
-        './lib/babylon.custom.js': {
-            commonjs: './lib/babylon.custom.js',
-            commonjs2: './lib/babylon.custom.js',
-            amd: './lib/babylon.custom.js',
-            root: 'BABYLON'
-        }
+    devtool: "eval-source-map",
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'index.html'
+        })
+    ],
+    devServer: {
+        port: 8000
     }
 };

@@ -1,5 +1,6 @@
 const Vector3 = require('./vector');
 const Sphere = require('./sphere');
+const Config = require('./config');
 
 const getPosition = boid=>boid.position;
 const getVelocity = boid=>boid.velocity;
@@ -42,9 +43,9 @@ module.exports = class Boid {
     }
 
     updateVelocity() {
-        const separation = this.getSeparationVector(5).multiply(4);
-        const cohesion = this.getCohesionVector(15).divide(50);
-        const alignment = this.getAlignmentVector(15).divide(4);
+        const separation = this.getSeparationVector(Config.get('separationArea')).multiply(Config.get('separationCoefficient'));
+        const cohesion = this.getCohesionVector(Config.get('cohesionArea')).multiply(Config.get('cohesionCoefficient'));
+        const alignment = this.getAlignmentVector(Config.get('alignmentArea')).multiply(Config.get('alignmentCoefficient'));
         if(!separation.isNaN()) this.velocity = this.velocity.add(separation);
         if(!cohesion.isNaN()) this.velocity = this.velocity.add(cohesion);
         if(!alignment.isNaN()) this.velocity = this.velocity.add(alignment);

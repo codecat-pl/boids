@@ -5,7 +5,8 @@
   "main": "boids.js",
   "scripts": {
     "build": "webpack -w",
-    "test": "mocha -w"
+    "test": "mocha -w",
+    "dev": "webpack-dev-server --mode development"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,16 @@
   },
   "homepage": "https://github.com/raaymax/boids#readme",
   "devDependencies": {
-    "nyc": "^11.4.1",
+    "nyc": "^11.5.0",
     "sinon": "^4.2.2"
   },
   "dependencies": {
-    "webpack": "^3.10.0"
+    "babylonjs": "^3.2.0-alphaC",
+    "chai": "^4.1.2",
+    "html-webpack-plugin": "^3.0.6",
+    "mocha": "^5.0.4",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11",
+    "webpack-dev-server": "^3.1.1"
   }
 }

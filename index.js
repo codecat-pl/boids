@@ -1,4 +1,4 @@
-const BABYLON = require('./lib/babylon.custom');
+const BABYLON = require('babylonjs');
 const Boids = require('./src/boids');
 const Vector3 = Boids.Vector3;
 let running = false;
@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
     const env = new Boids.Environment();
     const factory = new Boids.Factory(env);
-    for(let i = 0; i < 50; i++){
+    for(let i = 0; i < 500; i++){
         let velocity = new Vector3(Math.random()*50,Math.random()*50,Math.random()*50);
         let position = new Vector3(Math.random()*50,Math.random()*50,Math.random()*50);
         factory.createBoid(position, velocity);
@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', function(){
         document.getElementById('fps').innerHTML = engine.getFps().toFixed();
         env.update();
         env.boids.forEach(boid=>{
-            console.log(boid.position);
+            //console.log(boid.position);
             let x = boid.velocity.x;
             let y = boid.velocity.y;
             let z = boid.velocity.z;
